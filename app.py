@@ -4,27 +4,36 @@ import numpy as np
 from PIL import Image
 from random import randint
 import matplotlib.pyplot as plt
+from mpl_toolkits.axes_grid1 import ImageGrid
 
 image = Image.open('medmnist.jpg')
 st.image(image, use_column_width=True)
 
 
+b = np.load('breastmnist.npz')
+
+train_images=b['train_images']
+val_images=b['val_images']
+test_images=b['test_images']
+train_labels=b['train_labels']
+val_labels=b['val_labels'] 
+
+
+test_img_num =[train_images.shape[0]]
+
 title = st.title('Medical Image Classification and Segmentation')
 
-header1 = st.sidebar.header('Classification')
-classification = st.sidebar.selectbox(
-    'Select the dataset',
-    ('Choose a dataset', 'MedMNIST'))
+
+header1 = st.sidebar.header('Medical Image Tasks')
+tasks = st.sidebar.selectbox('', ('Choose a task','Classification', 'Segmentation'))
+
+
 
 #'PathMNIST', 'ChestMNIST', 'DermaMNIST','OCTMNIST', 'PneumoniaMNIST','RetainaMNIST', 'BreastMNIST', 'OrganMNIST_Axial','OrganMNIST_Coronal','OrganMNIST_Sagittal'
 
-header2 = st.sidebar.header('Segmentation')
-segmentation = st.sidebar.selectbox(
-    'Select the dataset',
-    ('Choose a dataset', 'MICCAI BraTS 2017', 'Sunny Cardiac Data'))
 
 
-if classification == 'Choose a dataset' and segmentation == 'Choose a dataset':
+if tasks == 'Choose a task':
     st.write('This demo collects different medical image analysis tasks and their machine learning solutions from different researches')
     
     st.header('Introduction')
@@ -39,39 +48,52 @@ if classification == 'Choose a dataset' and segmentation == 'Choose a dataset':
     st.subheader('Model Exploration')
 #st.sidebar.write('Select dataset and visualization method')
 
-b = np.load('breastmnist.npz')
 
-train_images=b['train_images']
-val_images=b['val_images']
-test_images=b['test_images']
-train_labels=b['train_labels']
-val_labels=b['val_labels'] 
+if tasks == 'Classification':
 
-
-test_img_num =[train_images.shape[0]]
-
-
-
-
-
-# if classification != 'Choose a dataset':
+    classification = st.selectbox('1. Select the dataset',
+        ('Choose a dataset', 'MedMNIST', 'Kaggle Diabetic Retinopathy Detection', 'Intel & MobileODT Cervical Cancer Screening', 'MLSP 2014 Schizophrenia Classification Challenge', 'Kaggle Recursion Cellular Image Classification' ))
     
-#     #st.sidebar.text('2. Make a prediction')
-#     image_number = st.sidebar.number_input('2. Select image number from testset and make prediction', max_value=test_img_num[0], step=1, value=1)
+    if classification == 'MedMNIST':
+            
+        #fig, ax = plt.subplots(figsize=(1,1))
+        
+        med =st.button('show images')
+        if med:
+            fig = plt.figure(figsize=(8., 8.))
+            grid = ImageGrid(fig, 111,  # similar to subplot(111)
+                 nrows_ncols=(4, 4),  # creates 2x2 grid of axes
+                 axes_pad=0.1,  # pad between axes in inch.
+                 )
+            plt.title('test image')
+            for ax, im in zip(grid, [test_images[x] for x in range(16)]):
+                # Iterating over the grid returns the Axes.
+                ax.imshow(im)
+            plt.imshow(test_images[1], cmap='gray')
+            st.pyplot(fig,use_colunm_width=True)
+        st.text('2. Make a prediction')
+        clab = st.button('Predict  ')
+        st.selectbox('3. Select visualization method',('LIME', 'Saliency Map','Grad-CAM'))
+
+    
+    #st.sidebar.text('2. Make a prediction')
    
-#     #clasb = st.sidebar.button('Predict ')
+    #clasb = st.sidebar.button('Predict ')
     
-#     cvis = st.sidebar.radio('3. Select visualization method ',
-#         ('LIME', 'Saliency Map','Grad-CAM'))
+    # cvis = st.radio('3. Select visualization method ',
+    #     ('LIME', 'Saliency Map','Grad-CAM'))
 
 
 
-# if segmentation != 'Choose a dataset':
-#     st.sidebar.text('2. Make a prediction')
-#     segb = st.sidebar.button('Predict  ')
+if tasks == 'Segmentation':
+    
+    header2 = st.header('Segmentation')
+    segmentation = st.selectbox('1. Select the dataset', ('Choose a dataset', ' BraTS2017 ', 'Skin Lesion Analysis towards melanoma detection', 'Kaggle Ultrasound Nerve Segmentation', 'Kaggle 2018 Data Science Bowl'  ))
 
-#     svis = st.sidebar.radio('3. Select visualization method',
-#         ('LIME', 'Saliency Map','Grad-CAM'))
+    st.text('2. Make a prediction')
+    segb = st.button('Predict  ')
+
+    svis = st.radio('3. Select visualization method',('LIME', 'Saliency Map','Grad-CAM'))
 
     
 
@@ -89,16 +111,6 @@ st.sidebar.markdown( '[More resources and tools](https://github.com/epadam/machi
 
 
 
-if classification == 'BreastMNIST':
-            
-    #fig, ax = plt.subplots(figsize=(1,1))
-    st.subheader('Breast cancer classification') 
-    fig=plt.figure(figsize=(1,1))
-    plt.title('test image')
-    plt.imshow(test_images[1], cmap='gray')
-    st.pyplot(fig, width=10)
-    st.button('Predict')
-    st.selectbox('Select visualization method',('LIME', 'Saliency Map','Grad-CAM'))
 
 
 # st.write(train_imagas[1])
