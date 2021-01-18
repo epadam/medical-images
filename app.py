@@ -42,10 +42,21 @@ if tasks == 'Choose a task':
     
     st.write('A good tool can save a lot of time. MONAI is open sourced by Nvidia for medical image processing')
     st.subheader('Data Augmentation')
+    st.markdown('#### GAN')
     
     st.subheader('Model Selection')
     
+    st.markdown('#### Loss Function')
+
+
     st.subheader('Model Exploration')
+
+    st.subheader('Other Techniques')
+
+    st.markdown('#### Transfer Learning')
+    st.markdown('#### Few Shot Learning')
+    st.markdown('#### Active Learning')
+    st.markdown('#### Weakly Supervision')
 #st.sidebar.write('Select dataset and visualization method')
 
 
